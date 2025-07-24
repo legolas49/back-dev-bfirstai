@@ -1,0 +1,69 @@
+{
+  "name": "back-dev-bfirstai",
+  "version": "1.0.0",
+  "description": "BFirst AI Backoffice - Environnement de développement",
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "test:coverage": "vitest --coverage",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+    "docker:build": "docker build -t ghcr.io/legolas49/back-dev-bfirstai:latest .",
+    "docker:run": "docker run -p 3000:3000 ghcr.io/legolas49/back-dev-bfirstai:latest",
+    "docker:push": "docker push ghcr.io/legolas49/back-dev-bfirstai:latest"
+  },
+  "devDependencies": {
+    "@sveltejs/adapter-node": "^4.0.1",
+    "@sveltejs/kit": "^2.0.0",
+    "@sveltejs/vite-plugin-svelte": "^3.0.0",
+    "@types/node": "^20.11.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-svelte": "^2.35.1",
+    "prettier": "^3.1.1",
+    "prettier-plugin-svelte": "^3.1.2",
+    "svelte": "^4.2.7",
+    "svelte-check": "^3.6.0",
+    "tslib": "^2.4.1",
+    "typescript": "^5.0.0",
+    "vite": "^5.0.3",
+    "vitest": "^1.2.0"
+  },
+  "dependencies": {
+    "mongodb": "^6.3.0",
+    "dotenv": "^16.4.0",
+    "jsonwebtoken": "^9.0.2",
+    "bcryptjs": "^2.4.3",
+    "zod": "^3.22.4",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/jsonwebtoken": "^9.0.5"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/legolas49/back-dev-bfirstai.git"
+  },
+  "keywords": [
+    "svelte",
+    "sveltekit",
+    "bfirst-ai",
+    "backoffice",
+    "development",
+    "mongodb",
+    "kubernetes"
+  ],
+  "author": "BFirst AI Team",
+  "license": "MIT"
+}
