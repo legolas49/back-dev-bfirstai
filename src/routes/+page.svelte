@@ -31,7 +31,7 @@
 </svelte:head>
 
 <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-	<div class="container mx-auto px-4 py-8">
+	<main class="container mx-auto px-4 py-8">
 		<!-- Hero Section -->
 		<div class="text-center mb-12">
 			<div class="mb-6">
@@ -258,11 +258,6 @@
 
 	.space-y-2 > * + * {
 		margin-top: 0.5rem;
-	}
-
-	.text-4xl {
-		font-size: 2.25rem;
-		line-height: 2.5rem;
 	}
 
 	.text-2xl {
