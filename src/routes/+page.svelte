@@ -142,6 +142,15 @@
 		<!-- Quick Actions -->
 		<div class="card mb-8">
 			<h2 class="text-2xl font-bold mb-6">🎛️ Actions Rapides</h2>
+			<div class="mb-4 p-4 bg-green-50 border-l-4 border-green-400 rounded">
+				<div class="flex items-center">
+					<div class="text-2xl mr-3">🌙</div>
+					<div>
+						<p class="text-green-800 font-medium">✅ Déploiement GitOps réussi !</p>
+						<p class="text-green-600 text-sm">Pipeline automatique fonctionnel - Bonne nuit ! 😴</p>
+					</div>
+				</div>
+			</div>
 			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
 				<a href="/dashboard" class="btn btn-primary"> 📊 Dashboard </a>
 				<a href="/users" class="btn btn-secondary"> 👥 Utilisateurs </a>
@@ -279,6 +288,80 @@
 
 	.animate-pulse {
 		animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+	}
+
+	.loading-spinner {
+		width: 20px;
+		height: 20px;
+		border: 2px solid #f3f4f6;
+		border-top: 2px solid #f59e0b;
+		border-radius: 50%;
+		animation: spin 1s linear infinite;
+	}
+
+	@keyframes spin {
+		0% {
+			transform: rotate(0deg);
+		}
+		100% {
+			transform: rotate(360deg);
+		}
+	}
+
+	.opacity-75 {
+		opacity: 0.75;
+	}
+
+	.bg-amber-50 {
+		background-color: #fffbeb;
+	}
+
+	.bg-green-50 {
+		background-color: #f0fdf4;
+	}
+
+	.border-l-4 {
+		border-left-width: 4px;
+	}
+
+	.border-amber-400 {
+		border-color: #fbbf24;
+	}
+
+	.border-green-400 {
+		border-color: #4ade80;
+	}
+
+	.text-amber-800 {
+		color: #92400e;
+	}
+
+	.text-amber-600 {
+		color: #d97706;
+	}
+
+	.text-green-800 {
+		color: #166534;
+	}
+
+	.text-green-600 {
+		color: #16a34a;
+	}
+
+	.btn-disabled {
+		background-color: #f3f4f6;
+		color: #9ca3af;
+		cursor: not-allowed;
+		border: 1px solid #e5e7eb;
+		padding: 0.75rem 1.5rem;
+		border-radius: 0.5rem;
+		text-decoration: none;
+		font-weight: 500;
+		transition: all 0.2s;
+		text-align: center;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
 	}
 
 	.space-y-2 > * + * {
