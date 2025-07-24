@@ -37,7 +37,7 @@ export const GET: RequestHandler = async () => {
 		healthCheck.services.database.message = 'MongoDB URI not configured (MONGODB_URI missing)';
 	}
 
-	// Redis pas encore configuré - statut honnête  
+	// Redis pas encore configuré - statut honnête
 	if (process.env.REDIS_URL) {
 		try {
 			// TODO: Implémenter la vraie connexion Redis

@@ -35,18 +35,26 @@
 		<!-- Hero Section -->
 		<div class="text-center mb-12">
 			<div class="mb-6">
-				<div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full mb-4">
+				<div
+					class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full mb-4"
+				>
 					<span class="text-3xl">🚀</span>
 				</div>
-				<h1 class="text-5xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-4">
+				<h1
+					class="text-5xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-4"
+				>
 					BFirst AI Backoffice
 				</h1>
 				<p class="text-xl text-gray-600 mb-4">Environnement de Développement</p>
 				<div class="flex justify-center gap-4">
-					<span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+					<span
+						class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-blue-100 text-blue-800"
+					>
 						✨ Version {version}
 					</span>
-					<span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-green-100 text-green-800">
+					<span
+						class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-green-100 text-green-800"
+					>
 						🕒 {timestamp}
 					</span>
 				</div>
