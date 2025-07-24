@@ -2,9 +2,9 @@ name: 🚀 Build and Deploy DEV
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 env:
   REGISTRY: ghcr.io
@@ -15,125 +15,125 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
     steps:
-    - name: 📦 Checkout code
-      uses: actions/checkout@v4
+      - name: 📦 Checkout code
+        uses: actions/checkout@v4
 
-    - name: 🟢 Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
-        cache: 'npm'
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
 
-    - name: 📥 Install dependencies
-      run: npm ci
+      - name: 📥 Install dependencies
+        run: npm ci
 
-    - name: 🧪 Run tests
-      run: npm run test
+      - name: 🧪 Run tests
+        run: npm run test
 
-    - name: 🔍 Run linting
-      run: npm run lint
+      - name: 🔍 Run linting
+        run: npm run lint
 
-    - name: ✨ Check formatting
-      run: npm run format:check
+      - name: ✨ Check formatting
+        run: npm run format:check
 
-    - name: 🏗️ Build application
-      run: npm run build
+      - name: 🏗️ Build application
+        run: npm run build
 
   # Job de build et push Docker
   docker-build-push:
     needs: build-and-test
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    
+
     permissions:
       contents: read
       packages: write
 
     steps:
-    - name: 📦 Checkout code
-      uses: actions/checkout@v4
+      - name: 📦 Checkout code
+        uses: actions/checkout@v4
 
-    - name: 🔐 Log in to Container Registry
-      uses: docker/login-action@v3
-      with:
-        registry: ${{ env.REGISTRY }}
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
+      - name: 🔐 Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: 🏷️ Extract metadata
-      id: meta
-      uses: docker/metadata-action@v5
-      with:
-        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-        tags: |
-          type=ref,event=branch
-          type=sha,prefix={{branch}}-
-          type=raw,value=latest,enable={{is_default_branch}}
+      - name: 🏷️ Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
 
-    - name: 🔨 Build and push Docker image
-      uses: docker/build-push-action@v5
-      with:
-        context: .
-        file: ./Dockerfile
-        push: true
-        tags: ${{ steps.meta.outputs.tags }}
-        labels: ${{ steps.meta.outputs.labels }}
+      - name: 🔨 Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
 
   # Job de déploiement vers Kubernetes
   deploy-to-k8s:
     needs: docker-build-push
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    
+
     steps:
-    - name: 📦 Checkout code
-      uses: actions/checkout@v4
+      - name: 📦 Checkout code
+        uses: actions/checkout@v4
 
-    - name: 🔧 Setup SSH for cluster access
-      run: |
-        mkdir -p ~/.ssh
-        echo "${{ secrets.CLUSTER_SSH_KEY }}" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan -H ${{ secrets.CLUSTER_HOST }} >> ~/.ssh/known_hosts
+      - name: 🔧 Setup SSH for cluster access
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.CLUSTER_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.CLUSTER_HOST }} >> ~/.ssh/known_hosts
 
-    - name: 🚀 Deploy to Kubernetes cluster
-      run: |
-        # Copier les configs KubeVela vers le cluster
-        scp -i ~/.ssh/id_rsa -r kubevela/ root@${{ secrets.CLUSTER_HOST }}:/tmp/
-        
-        # Déployer via Kubernetes
-        ssh -i ~/.ssh/id_rsa root@${{ secrets.CLUSTER_HOST }} "
-          # Créer le namespace s'il n'existe pas
-          kubectl create namespace backoffice-dev --dry-run=client -o yaml | kubectl apply -f -
-          
-          # Appliquer la configuration KubeVela
-          kubectl apply -f /tmp/kubevela/backoffice-dev.yaml
-          
-          # Appliquer le service et ingress
-          kubectl apply -f /tmp/kubevela/ingress.yaml
-          
-          # Attendre que le déploiement soit prêt
-          kubectl wait --for=condition=available --timeout=600s deployment -l app.oam.dev/component=backoffice-dev-app -n backoffice-dev
-          
-          # Vérifier que le service fonctionne
-          kubectl get pods,services,ingress -n backoffice-dev
-        "
+      - name: 🚀 Deploy to Kubernetes cluster
+        run: |
+          # Copier les configs KubeVela vers le cluster
+          scp -i ~/.ssh/id_rsa -r kubevela/ root@${{ secrets.CLUSTER_HOST }}:/tmp/
 
-    - name: ✅ Verify deployment
-      run: |
-        ssh -i ~/.ssh/id_rsa root@${{ secrets.CLUSTER_HOST }} "
-          kubectl get pods -n backoffice-dev -l app=backoffice-dev &&
-          kubectl get svc,ingress -n backoffice-dev
-        "
+          # Déployer via Kubernetes
+          ssh -i ~/.ssh/id_rsa root@${{ secrets.CLUSTER_HOST }} "
+            # Créer le namespace s'il n'existe pas
+            kubectl create namespace backoffice-dev --dry-run=client -o yaml | kubectl apply -f -
+            
+            # Appliquer la configuration KubeVela
+            kubectl apply -f /tmp/kubevela/backoffice-dev.yaml
+            
+            # Appliquer le service et ingress
+            kubectl apply -f /tmp/kubevela/ingress.yaml
+            
+            # Attendre que le déploiement soit prêt
+            kubectl wait --for=condition=available --timeout=600s deployment -l app.oam.dev/component=backoffice-dev-app -n backoffice-dev
+            
+            # Vérifier que le service fonctionne
+            kubectl get pods,services,ingress -n backoffice-dev
+          "
 
-    - name: 🎉 Deployment success notification
-      if: success()
-      run: |
-        echo "🎉 Deployment successful!"
-        echo "🌐 Application available at: https://backoffice-dev.bfirst-ai.com"
+      - name: ✅ Verify deployment
+        run: |
+          ssh -i ~/.ssh/id_rsa root@${{ secrets.CLUSTER_HOST }} "
+            kubectl get pods -n backoffice-dev -l app=backoffice-dev &&
+            kubectl get svc,ingress -n backoffice-dev
+          "
 
-    - name: ❌ Deployment failure notification
-      if: failure()
-      run: |
-        echo "❌ Deployment failed!"
-        echo "Check the logs above for more details."
+      - name: 🎉 Deployment success notification
+        if: success()
+        run: |
+          echo "🎉 Deployment successful!"
+          echo "🌐 Application available at: https://backoffice-dev.bfirst-ai.com"
+
+      - name: ❌ Deployment failure notification
+        if: failure()
+        run: |
+          echo "❌ Deployment failed!"
+          echo "Check the logs above for more details."

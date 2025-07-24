@@ -3,7 +3,7 @@
 > **Environnement :** Développement uniquement  
 > **Registry :** GitHub Container Registry (GHCR)  
 > **Image :** `ghcr.io/legolas49/back-dev-bfirstai`  
-> **Déploiement :** `backoffice-dev.bfirst-ai.com`  
+> **Déploiement :** `backoffice-dev.bfirst-ai.com`
 
 ---
 
@@ -12,6 +12,7 @@
 Ce repository contient le code du backoffice BFirst AI pour l'**environnement de développement uniquement**.
 
 ### Stratégie DEV-first
+
 1. ✅ Validation complète en DEV
 2. 📋 Tests et ajustements en DEV
 3. 🚀 Duplication vers production une fois validé
@@ -21,6 +22,7 @@ Ce repository contient le code du backoffice BFirst AI pour l'**environnement de
 ## 🏗️ Architecture
 
 ### Stack Technique
+
 - **Frontend :** SvelteKit
 - **Backend :** Node.js/Express
 - **Base de données :** MongoDB
@@ -29,6 +31,7 @@ Ce repository contient le code du backoffice BFirst AI pour l'**environnement de
 - **Orchestration :** Kubernetes + KubeVela
 
 ### Environnement DEV
+
 - **Namespace :** `backoffice-dev`
 - **URL :** https://backoffice-dev.bfirst-ai.com
 - **Image :** `ghcr.io/legolas49/back-dev-bfirstai:latest`
@@ -39,12 +42,15 @@ Ce repository contient le code du backoffice BFirst AI pour l'**environnement de
 ## 🚀 Déploiement
 
 ### GitHub Actions
+
 Le workflow CI/CD se déclenche automatiquement :
+
 1. **Push vers `main`** → Build + Push vers GHCR
 2. **Image disponible** → Déploiement automatique via KubeVela
 3. **Application accessible** → https://backoffice-dev.bfirst-ai.com
 
 ### Manuel
+
 ```bash
 # Build local
 docker build -t ghcr.io/legolas49/back-dev-bfirstai:latest .
