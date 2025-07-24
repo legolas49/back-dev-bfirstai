@@ -46,10 +46,12 @@
 					BFirst AI Backoffice
 				</h1>
 				<p class="text-xl text-gray-600 mb-4">Environnement de Développement</p>
-				
+
 				<!-- Badge GitOps pour test visuel -->
 				<div class="mb-6">
-					<span class="inline-flex items-center px-6 py-3 rounded-full text-lg font-bold bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-lg animate-pulse">
+					<span
+						class="inline-flex items-center px-6 py-3 rounded-full text-lg font-bold bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-lg animate-pulse"
+					>
 						🤖 GitOps Auto-Deploy v2.0 ACTIF
 					</span>
 				</div>
@@ -159,7 +161,10 @@
 						<li><strong>Image:</strong> ghcr.io/legolas49/back-dev-bfirstai</li>
 						<li><strong>Namespace:</strong> backoffice-dev</li>
 						<li><strong>URL:</strong> backoffice-dev.bfirst-ai.com</li>
-						<li><strong>🤖 GitOps:</strong> <span class="text-green-600 font-semibold">Surveillance Auto GHCR</span></li>
+						<li>
+							<strong>🤖 GitOps:</strong>
+							<span class="text-green-600 font-semibold">Surveillance Auto GHCR</span>
+						</li>
 					</ul>
 				</div>
 				<div>
