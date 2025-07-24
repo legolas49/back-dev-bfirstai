@@ -11,8 +11,27 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
+  # Vérifier si on doit ignorer les commits auto de KubeVela
+  check-commit:
+    runs-on: ubuntu-latest
+    outputs:
+      should-run: ${{ steps.check.outputs.result }}
+    steps:
+      - name: 🔍 Check if commit should trigger build
+        id: check
+        run: |
+          if [[ "${{ github.event.head_commit.message }}" == *"🤖 Auto-update image:"* ]]; then
+            echo "result=false" >> $GITHUB_OUTPUT
+            echo "⏭️ Skipping build for auto-update commit"
+          else
+            echo "result=true" >> $GITHUB_OUTPUT
+            echo "✅ Proceeding with build"
+          fi
+
   # Job de test et build
   build-and-test:
+    needs: check-commit
+    if: needs.check-commit.outputs.should-run == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: 📦 Checkout code
@@ -41,9 +60,9 @@ jobs:
 
   # Job de build et push Docker
   docker-build-push:
-    needs: build-and-test
+    needs: [check-commit, build-and-test]
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: needs.check-commit.outputs.should-run == 'true' && github.event_name == 'push' && github.ref == 'refs/heads/main'
 
     permissions:
       contents: read
@@ -67,7 +86,7 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
             type=ref,event=branch
-            type=sha,prefix={{branch}}-
+            type=sha,prefix=main-,format=short,suffix=-{{date 'X'}}
             type=raw,value=latest,enable={{is_default_branch}}
 
       - name: 🔨 Build and push Docker image
@@ -81,9 +100,9 @@ jobs:
 
   # Job de déploiement vers Kubernetes
   deploy-to-k8s:
-    needs: docker-build-push
+    needs: [check-commit, docker-build-push]
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: needs.check-commit.outputs.should-run == 'true' && github.event_name == 'push' && github.ref == 'refs/heads/main'
 
     steps:
       - name: 📦 Checkout code

@@ -1,0 +1,37 @@
+apiVersion: core.oam.dev/v1beta1
+kind: Application
+metadata:
+  name: backoffice-dev-image-gitops
+  namespace: backoffice-dev
+  annotations:
+    description: 'GitOps automatique pour surveillance GHCR et mise à jour automatique'
+spec:
+  components:
+    - name: image-gitops
+      type: kustomize
+      properties:
+        repoType: git
+        # Repository GitHub du projet
+        url: https://github.com/legolas49/back-dev-bfirstai
+        # Secret pour écriture dans le repository (à créer)
+        secretRef: github-write-secret
+        pullInterval: 2m
+        git:
+          # Branche principale
+          branch: main
+        # Chemin vers les configurations KubeVela
+        path: ./kubevela
+        imageRepository:
+          # Image GHCR à surveiller
+          image: ghcr.io/legolas49/back-dev-bfirstai
+          # Pattern pour filtrer les tags (SHA des commits)
+          filterTags:
+            # Filtre pour tags main-<sha>-<timestamp> créés par GitHub Actions
+            pattern: '^main-[a-f0-9]{7}-(?P<ts>[0-9]+)$'
+            extract: '$ts'
+          # Politique pour choisir la dernière image
+          policy:
+            numerical:
+              order: desc # Plus récent en premier
+          # Message de commit personnalisé
+          commitMessage: '🤖 Auto-update image: {{range .Updated.Images}}{{println .}}{{end}}'
