@@ -98,11 +98,25 @@ jobs:
 
     - name: 🚀 Deploy to Kubernetes cluster
       run: |
-        # Mise à jour de l'image dans KubeVela
+        # Copier les configs KubeVela vers le cluster
+        scp -i ~/.ssh/id_rsa -r kubevela/ root@${{ secrets.CLUSTER_HOST }}:/tmp/
+        
+        # Déployer via Kubernetes
         ssh -i ~/.ssh/id_rsa root@${{ secrets.CLUSTER_HOST }} "
-          cd /opt/kubevela-configs &&
-          vela up -f backoffice-dev.yaml --env backoffice-dev &&
-          kubectl rollout status deployment/backoffice-dev -n backoffice-dev --timeout=300s
+          # Créer le namespace s'il n'existe pas
+          kubectl create namespace backoffice-dev --dry-run=client -o yaml | kubectl apply -f -
+          
+          # Appliquer la configuration KubeVela
+          kubectl apply -f /tmp/kubevela/backoffice-dev.yaml
+          
+          # Appliquer le service et ingress
+          kubectl apply -f /tmp/kubevela/ingress.yaml
+          
+          # Attendre que le déploiement soit prêt
+          kubectl wait --for=condition=available --timeout=600s deployment -l app.oam.dev/component=backoffice-dev-app -n backoffice-dev
+          
+          # Vérifier que le service fonctionne
+          kubectl get pods,services,ingress -n backoffice-dev
         "
 
     - name: ✅ Verify deployment

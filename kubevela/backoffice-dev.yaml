@@ -1,0 +1,99 @@
+apiVersion: core.oam.dev/v1beta1
+kind: Application
+metadata:
+  name: backoffice-dev
+  namespace: backoffice-dev
+  annotations:
+    version: "v1.0.0-dev"
+    description: "BFirst AI Backoffice - Environnement de développement"
+spec:
+  components:
+  - name: backoffice-dev-app
+    type: webservice
+    properties:
+      image: ghcr.io/legolas49/back-dev-bfirstai:latest
+      imagePullPolicy: Always
+      ports:
+      - port: 3000
+        expose: true
+        protocol: TCP
+      
+      # Configuration CPU et mémoire
+      cpu: "200m"
+      memory: "512Mi"
+      
+      # Variables d'environnement
+      env:
+      - name: NODE_ENV
+        value: "production"
+      - name: PORT
+        value: "3000"
+      - name: MONGO_URI
+        value: "mongodb://mongodb.mongodb.svc.cluster.local:27017/backoffice_dev"
+      - name: MONGO_PRICING_URI
+        value: "mongodb://mongodb.mongodb.svc.cluster.local:27017/pricing_dev"
+      - name: PUBLIC_API_BASE_URL
+        value: "https://api-dev.bfirst-ai.com"
+      - name: PUBLIC_FRONTEND_URL
+        value: "https://backoffice-dev.bfirst-ai.com"
+      - name: JWT_SECRET
+        value: "dev-jwt-secret-change-me"
+      - name: LOG_LEVEL
+        value: "debug"
+      - name: ENABLE_METRICS
+        value: "true"
+      
+      # Sondes de santé
+      livenessProbe:
+        httpGet:
+          path: /api/health
+          port: 3000
+        initialDelaySeconds: 30
+        periodSeconds: 10
+        timeoutSeconds: 5
+        failureThreshold: 3
+      
+      readinessProbe:
+        httpGet:
+          path: /api/health
+          port: 3000
+        initialDelaySeconds: 5
+        periodSeconds: 5
+        timeoutSeconds: 3
+        successThreshold: 1
+        failureThreshold: 3
+
+    traits:
+    # Configuration de l'ingress pour l'accès externe
+    - type: gateway
+      properties:
+        domain: backoffice-dev.bfirst-ai.com
+        http:
+          "/": 3000
+        class: nginx
+    
+    # Configuration de la mise à l'échelle
+    - type: scaler
+      properties:
+        replicas: 1
+        
+    # Configuration des ressources
+    - type: resource
+      properties:
+        requests:
+          cpu: "100m"
+          memory: "256Mi"
+        limits:
+          cpu: "500m"
+          memory: "1Gi"
+
+---
+# Configuration du namespace si nécessaire
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: backoffice-dev
+  labels:
+    name: backoffice-dev
+    environment: development
+    app: bfirst-ai-backoffice
