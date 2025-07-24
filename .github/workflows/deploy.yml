@@ -20,12 +20,15 @@ jobs:
       - name: 🔍 Check if commit should trigger build
         id: check
         run: |
-          if [[ "${{ github.event.head_commit.message }}" == *"🤖 Auto-update image:"* ]]; then
+          commit_msg="${{ github.event.head_commit.message }}"
+          if [[ "$commit_msg" == *"Auto-update image:"* ]]; then
             echo "result=false" >> $GITHUB_OUTPUT
             echo "⏭️ Skipping build for auto-update commit"
+            echo "Message: $commit_msg"
           else
             echo "result=true" >> $GITHUB_OUTPUT
             echo "✅ Proceeding with build"
+            echo "Message: $commit_msg"
           fi
 
   # Job de test et build
