@@ -12,8 +12,8 @@ WORKDIR /app
 # Copier les fichiers de dépendances
 COPY package*.json ./
 
-# Installer les dépendances
-RUN npm ci --only=production && npm cache clean --force
+# Installer TOUTES les dépendances (dev + prod pour le build)
+RUN npm ci && npm cache clean --force
 
 # Copier le code source
 COPY . .
@@ -31,10 +31,14 @@ RUN adduser -S svelte -u 1001
 # Répertoire de travail
 WORKDIR /app
 
-# Copier les dépendances de production
-COPY --from=builder /app/node_modules ./node_modules
+# Copier package.json et package-lock.json
+COPY --from=builder /app/package*.json ./
+
+# Installer uniquement les dépendances de production
+RUN npm ci --omit=dev && npm cache clean --force
+
+# Copier les fichiers buildés et autres nécessaires
 COPY --from=builder /app/build ./build
-COPY --from=builder /app/package.json ./
 
 # Changer le propriétaire des fichiers
 RUN chown -R svelte:nodejs /app
