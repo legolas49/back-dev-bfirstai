@@ -47,6 +47,231 @@
 				</h1>
 				<p class="text-xl text-gray-600 mb-4">Environnement de Développement</p>
 
+				<!-- Badge Migration pour montrer le progrès -->
+				<div class="mb-6">
+					<span
+						class="inline-flex items-center px-6 py-3 rounded-full text-lg font-bold bg-gradient-to-r from-green-500 to-blue-600 text-white shadow-lg animate-pulse"
+					>
+						🎯 Migration Dash-Preprod ACTIVE ! Authentification + Dashboard
+					</span>
+				</div>
+				<div class="flex justify-center gap-4">
+					<span
+						class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-blue-100 text-blue-800"
+					>
+						✨ Version {version}
+					</span>
+					<span
+						class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-green-100 text-green-800"
+					>
+						🕒 {timestamp}
+					</span>
+				</div>
+			</div>
+		</div>
+
+		<!-- Status Cards -->
+		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+			<!-- Application Status -->
+			<div class="card">
+				<div class="flex items-center justify-between mb-4">
+					<h3 class="text-lg font-semibold">Application</h3>
+					<div
+						class="status-indicator {status === 'ok'
+							? 'status-ok'
+							: status === 'error'
+								? 'status-error'
+								: 'status-loading'}"
+					></div>
+				</div>
+				<p class="text-secondary">
+					{#if status === 'ok'}
+						✅ Application fonctionnelle
+					{:else if status === 'error'}
+						❌ Erreur application
+					{:else}
+						⏳ Vérification en cours...
+					{/if}
+				</p>
+			</div>
+
+			<!-- Database Status -->
+			<div class="card">
+				<div class="flex items-center justify-between mb-4">
+					<h3 class="text-lg font-semibold">Base de données</h3>
+					<div
+						class="status-indicator {dbStatus === 'ok'
+							? 'status-ok'
+							: dbStatus === 'error'
+								? 'status-error'
+								: dbStatus === 'not_configured'
+									? 'status-warning'
+									: dbStatus === 'not_implemented'
+										? 'status-info'
+										: 'status-loading'}"
+					></div>
+				</div>
+				<p class="text-secondary">
+					{#if dbStatus === 'ok'}
+						✅ MongoDB connectée
+					{:else if dbStatus === 'error'}
+						❌ Connexion MongoDB échouée
+					{:else if dbStatus === 'not_configured'}
+						⚙️ MongoDB non configurée (MONGO_URI manquant)
+					{:else if dbStatus === 'not_implemented'}
+						🔧 Test MongoDB non implémenté
+					{:else}
+						⏳ Vérification connexion...
+					{/if}
+				</p>
+			</div>
+
+			<!-- Environment Info -->
+			<div class="card">
+				<div class="flex items-center justify-between mb-4">
+					<h3 class="text-lg font-semibold">Environnement</h3>
+					<div class="status-indicator status-dev"></div>
+				</div>
+				<p class="text-secondary">
+					🛠️ Développement<br />
+					<small class="text-xs">Namespace: backoffice-dev</small>
+				</p>
+			</div>
+		</div>
+
+		<!-- Migration Progress -->
+		<div class="card mb-8">
+			<h2 class="text-2xl font-bold mb-6">🔄 Migration en cours</h2>
+			<div class="space-y-4">
+				<div class="flex items-center justify-between p-4 bg-green-50 rounded-lg">
+					<div class="flex items-center">
+						<div class="text-green-600 text-xl mr-3">✅</div>
+						<span>Package.json mis à jour (dépendances Dash-Preprod)</span>
+					</div>
+				</div>
+				<div class="flex items-center justify-between p-4 bg-yellow-50 rounded-lg">
+					<div class="flex items-center">
+						<div class="loading-spinner mr-3"></div>
+						<span>Résolution problèmes cross-platform Windows/Linux...</span>
+					</div>
+				</div>
+				<div class="flex items-center justify-between p-4 bg-blue-50 rounded-lg">
+					<div class="flex items-center">
+						<div class="text-blue-600 text-xl mr-3">🔧</div>
+						<span>Suppression packages Windows-spécifiques (@rollup/rollup-win32-x64-msvc)</span>
+					</div>
+				</div>
+				<div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+					<div class="flex items-center">
+						<div class="text-gray-400 text-xl mr-3">⏳</div>
+						<span>Migration des routes d'authentification (en attente)</span>
+					</div>
+				</div>
+				<div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+					<div class="flex items-center">
+						<div class="text-gray-400 text-xl mr-3">⏳</div>
+						<span>Configuration MongoDB production (en attente)</span>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Quick Actions -->
+		<div class="card mb-8">
+			<h2 class="text-2xl font-bold mb-6">🎛️ Actions Rapides</h2>
+			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+				<a href="/auth/login" class="btn btn-primary"> � Authentification </a>
+				<a href="/dashboard" class="btn btn-primary"> � Dashboard </a>
+				<a href="/users" class="btn btn-secondary"> � Utilisateurs (Bientôt) </a>
+				<a href="/api/docs" class="btn btn-secondary" target="_blank"> 📖 API Docs </a>
+			</div>
+		</div>
+
+		<!-- Development Info -->
+		<div class="card">
+			<h2 class="text-2xl font-bold mb-6">🛠️ Informations de Développement</h2>
+			<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+				<div>
+					<h3 class="text-lg font-semibold mb-3">📋 Configuration</h3>
+					<ul class="space-y-2 text-sm">
+						<li><strong>Registry:</strong> GitHub Container Registry (GHCR)</li>
+						<li><strong>Image:</strong> ghcr.io/legolas49/back-dev-bfirstai</li>
+						<li><strong>Namespace:</strong> backoffice-dev</li>
+						<li><strong>URL:</strong> backoffice-dev.bfirst-ai.com</li>
+						<li>
+							<strong>🔄 Migration:</strong>
+							<span class="text-purple-600 font-semibold">Dash-Preprod → DEV</span>
+						</li>
+					</ul>
+				</div>
+				<div>
+					<h3 class="text-lg font-semibold mb-3">🔗 Liens Utiles</h3>
+					<ul class="space-y-2 text-sm">
+						<li>
+							<a
+								href="https://github.com/legolas49/back-dev-bfirstai"
+								target="_blank"
+								class="text-primary hover:underline">📦 Repository GitHub</a
+							>
+						</li>
+						<li>
+							<a
+								href="https://github.com/legolas49/back-dev-bfirstai/actions"
+								target="_blank"
+								class="text-primary hover:underline">🔄 GitHub Actions</a
+							>
+						</li>
+						<li>
+							<a
+								href="https://github.com/legolas49/back-dev-bfirstai/packages"
+								target="_blank"
+								class="text-primary hover:underline">📦 GHCR Packages</a
+							>
+						</li>
+						<li>
+							<a href="/api/health" target="_blank" class="text-primary hover:underline"
+								>🏥 Health Check</a
+							>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<!-- Footer -->
+		<footer class="text-center mt-8 pt-8 border-t border-gray-200">
+			<p class="text-secondary">
+				BFirst AI - Backoffice DEV | Migration Dash-Preprod | Powered by SvelteKit + MongoDB + Kubernetes
+			</p>
+		</footer>
+	</main>
+</div>
+
+<svelte:head>
+	<title>BFirst AI - Backoffice DEV</title>
+	<meta
+		name="description"
+		content="Interface d'administration BFirst AI - Environnement de développement"
+	/>
+</svelte:head>
+
+<div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+	<main class="container mx-auto px-4 py-8">
+		<!-- Hero Section -->
+		<div class="text-center mb-12">
+			<div class="mb-6">
+				<div
+					class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full mb-4"
+				>
+					<span class="text-3xl">🚀</span>
+				</div>
+				<h1
+					class="text-5xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-4"
+				>
+					BFirst AI Backoffice
+				</h1>
+				<p class="text-xl text-gray-600 mb-4">Environnement de Développement</p>
+
 				<!-- Badge GitOps pour test visuel -->
 				<div class="mb-6">
 					<span
